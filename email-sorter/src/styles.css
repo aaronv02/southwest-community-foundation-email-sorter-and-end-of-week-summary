@@ -1,0 +1,375 @@
+/*
+  Taskpane styling.
+
+  The pane is narrow (often ~320-400px) and sits inside Outlook, so this follows
+  Outlook's own visual language rather than introducing a competing one, and
+  respects the host's light/dark preference.
+*/
+
+:root {
+  --bg: #ffffff;
+  --fg: #201f1e;
+  --muted: #605e5c;
+  --line: #e1dfdd;
+  --accent: #0f6cbd;
+  --accent-hover: #115ea3;
+  --surface: #faf9f8;
+  --warn-bg: #fff4ce;
+  --warn-fg: #6b5900;
+  --radius: 4px;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #1f1f1f;
+    --fg: #f3f2f1;
+    --muted: #a19f9d;
+    --line: #3b3a39;
+    --accent: #479ef5;
+    --accent-hover: #62abf5;
+    --surface: #292929;
+    --warn-bg: #433519;
+    --warn-fg: #fce100;
+  }
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  padding: 12px;
+  background: var(--bg);
+  color: var(--fg);
+  font: 14px/1.45 "Segoe UI", system-ui, -apple-system, sans-serif;
+}
+
+.boot {
+  padding: 24px 8px;
+  color: var(--muted);
+}
+
+.head h1 {
+  margin: 0;
+  font-size: 17px;
+  font-weight: 600;
+}
+
+.status {
+  margin: 2px 0 10px;
+  color: var(--muted);
+  font-size: 12px;
+  min-height: 1.2em;
+}
+
+/* Tabs -------------------------------------------------------------------- */
+
+.tabs {
+  display: flex;
+  gap: 2px;
+  border-bottom: 1px solid var(--line);
+  margin-bottom: 12px;
+  overflow-x: auto;
+}
+
+.tab {
+  flex: 0 0 auto;
+  background: none;
+  border: none;
+  border-bottom: 2px solid transparent;
+  color: var(--muted);
+  cursor: pointer;
+  font: inherit;
+  font-size: 13px;
+  padding: 7px 9px;
+}
+
+.tab:hover {
+  color: var(--fg);
+}
+
+.tab.is-active {
+  border-bottom-color: var(--accent);
+  color: var(--fg);
+  font-weight: 600;
+}
+
+/* Buttons ----------------------------------------------------------------- */
+
+button.primary,
+button.secondary {
+  border-radius: var(--radius);
+  cursor: pointer;
+  font: inherit;
+  padding: 8px 14px;
+  width: 100%;
+}
+
+button.primary {
+  background: var(--accent);
+  border: 1px solid var(--accent);
+  color: #fff;
+  font-weight: 600;
+}
+
+button.primary:hover:not(:disabled) {
+  background: var(--accent-hover);
+}
+
+button.secondary {
+  background: transparent;
+  border: 1px solid var(--line);
+  color: var(--fg);
+  margin-top: 8px;
+}
+
+button.secondary:hover:not(:disabled) {
+  background: var(--surface);
+}
+
+button:disabled {
+  cursor: default;
+  opacity: 0.55;
+}
+
+/* Review ------------------------------------------------------------------ */
+
+.note {
+  background: var(--warn-bg);
+  border-radius: var(--radius);
+  color: var(--warn-fg);
+  font-size: 12px;
+  margin: 10px 0 0;
+  padding: 8px 10px;
+}
+
+.summary {
+  color: var(--muted);
+  font-size: 12px;
+  margin: 10px 0 0;
+}
+
+.empty {
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.decisions {
+  list-style: none;
+  margin: 12px 0 0;
+  padding: 0;
+}
+
+.decision {
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  margin-bottom: 8px;
+  padding: 9px 10px;
+}
+
+.decision.is-gated {
+  border-left: 3px solid var(--warn-fg);
+}
+
+.decision-subject {
+  font-weight: 600;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.decision-from,
+.decision-reason {
+  color: var(--muted);
+  font-size: 12px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.decision-reason {
+  font-style: italic;
+  margin-top: 3px;
+}
+
+.choices {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  margin-top: 7px;
+}
+
+.choice {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 11px;
+  cursor: pointer;
+  font: inherit;
+  font-size: 12px;
+  padding: 3px 9px;
+}
+
+.choice:hover {
+  border-color: var(--accent);
+}
+
+.choice.is-applied {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #fff;
+  font-weight: 600;
+}
+
+.choice-more {
+  background: none;
+  border: none;
+  color: var(--accent);
+  cursor: pointer;
+  font: inherit;
+  font-size: 12px;
+  padding: 3px 4px;
+  text-decoration: underline;
+}
+
+/* Categories -------------------------------------------------------------- */
+
+.explain {
+  color: var(--muted);
+  font-size: 12px;
+  margin-top: 0;
+}
+
+.categories {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.category {
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  margin-bottom: 8px;
+  padding: 8px 9px;
+}
+
+.category-head {
+  align-items: center;
+  display: flex;
+  gap: 6px;
+}
+
+.category input[type='text'],
+.category textarea {
+  background: var(--bg);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  color: var(--fg);
+  font: inherit;
+  padding: 5px 6px;
+  width: 100%;
+}
+
+.category textarea {
+  font-size: 12px;
+  margin-top: 5px;
+  min-height: 84px;
+  resize: vertical;
+}
+
+.category-drop {
+  background: none;
+  border: none;
+  color: var(--muted);
+  cursor: pointer;
+  font-size: 15px;
+  line-height: 1;
+  padding: 2px 5px;
+}
+
+.category-drop:hover {
+  color: #a4262c;
+}
+
+.rule-count {
+  color: var(--muted);
+  font-size: 11px;
+}
+
+/* Settings ---------------------------------------------------------------- */
+
+.field {
+  display: block;
+  margin-bottom: 14px;
+}
+
+.field > span {
+  display: block;
+  font-size: 13px;
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+
+.field input[type='password'],
+.field input[type='text'],
+.field select {
+  background: var(--bg);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  color: var(--fg);
+  font: inherit;
+  padding: 6px 7px;
+  width: 100%;
+}
+
+.field input[type='range'] {
+  width: 100%;
+}
+
+.field small {
+  color: var(--muted);
+  display: block;
+  font-size: 11px;
+  margin-top: 3px;
+}
+
+.diagnostics {
+  border-top: 1px solid var(--line);
+  color: var(--muted);
+  font-size: 11px;
+  padding-top: 10px;
+}
+
+.diagnostics dl {
+  display: grid;
+  gap: 2px 8px;
+  grid-template-columns: auto 1fr;
+  margin: 0;
+}
+
+.diagnostics dt {
+  font-weight: 600;
+}
+
+.diagnostics dd {
+  margin: 0;
+}
+
+.automation-group {
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  margin-bottom: 8px;
+  padding: 8px 9px;
+}
+
+.automation-group h3 {
+  font-size: 13px;
+  margin: 0 0 4px;
+}
+
+.automation-group p {
+  color: var(--muted);
+  font-size: 12px;
+  margin: 0;
+  word-break: break-all;
+}

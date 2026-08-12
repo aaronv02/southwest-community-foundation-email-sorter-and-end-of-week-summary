@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Inbox Steward</title>
+    <!-- Office.js must come from the Microsoft CDN; it is not bundleable. -->
+    <script src="https://appsforoffice.microsoft.com/lib/1/hosted/office.js"></script>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <div id="boot" class="boot">Starting…</div>
+
+    <main id="app" hidden>
+      <header class="head">
+        <h1>Inbox Steward</h1>
+        <p id="status" class="status"></p>
+      </header>
+
+      <nav class="tabs" role="tablist">
+        <button class="tab is-active" data-tab="review" role="tab">Review</button>
+        <button class="tab" data-tab="automation" role="tab">Automation</button>
+        <button class="tab" data-tab="categories" role="tab">Categories</button>
+        <button class="tab" data-tab="settings" role="tab">Settings</button>
+      </nav>
+
+      <!-- Review ---------------------------------------------------------- -->
+      <section id="panel-review" class="panel">
+        <button id="sort" class="primary">Sort my inbox</button>
+        <p id="run-note" class="note" hidden></p>
+        <div id="summary" class="summary" hidden></div>
+        <ul id="decisions" class="decisions"></ul>
+        <p id="review-empty" class="empty">
+          Press <strong>Sort my inbox</strong> and everything new gets a colored label.
+          Anything it isn't sure about is labelled <em>Needs Review</em> rather than guessed at.
+        </p>
+      </section>
+
+      <!-- Automation ------------------------------------------------------ -->
+      <section id="panel-automation" class="panel" hidden>
+        <p class="explain">
+          Once Inbox Steward has seen you file a sender a few times, it teaches that to
+          Outlook directly. Those senders are then sorted the moment mail arrives — even
+          when this panel is closed.
+        </p>
+        <div id="automation-body"></div>
+        <button id="promote" class="secondary">Check for new rules to hand off</button>
+      </section>
+
+      <!-- Categories ------------------------------------------------------ -->
+      <section id="panel-categories" class="panel" hidden>
+        <p class="explain">
+          Rename anything, or edit a description to change what lands there. The description
+          is what the sorter actually reads, so being specific pays off.
+        </p>
+        <ul id="categories" class="categories"></ul>
+        <button id="add-category" class="secondary">Add a category</button>
+        <button id="sync-categories" class="secondary">Create these in Outlook</button>
+      </section>
+
+      <!-- Settings -------------------------------------------------------- -->
+      <section id="panel-settings" class="panel" hidden>
+        <label class="field">
+          <span>Gemini API key</span>
+          <input id="api-key" type="password" autocomplete="off" placeholder="AIza…" />
+          <small>
+            Free from Google AI Studio. Stored in your mailbox settings, not on any server.
+          </small>
+        </label>
+
+        <label class="field">
+          <span>How much to send for sorting</span>
+          <select id="data-sharing">
+            <option value="full">Subject, sender, and a short preview</option>
+            <option value="metadata">Subject and sender only — no message text</option>
+            <option value="rules">Nothing — use learned senders only</option>
+          </select>
+          <small id="sharing-note"></small>
+        </label>
+
+        <label class="field">
+          <span>How bold should it be?</span>
+          <select id="autonomy">
+            <option value="suggest">Suggest labels, I'll approve them</option>
+            <option value="graduated">Start by asking, go automatic once it's reliable</option>
+            <option value="auto">Label everything automatically</option>
+          </select>
+        </label>
+
+        <label class="field">
+          <span>Confidence needed before labelling: <output id="threshold-out"></output></span>
+          <input id="threshold" type="range" min="0.4" max="0.95" step="0.05" />
+          <small>Lower labels more mail; higher sends more to Needs Review.</small>
+        </label>
+
+        <label class="field">
+          <span>Corrections before a sender is handed to Outlook: <output id="promote-out"></output></span>
+          <input id="promote-threshold" type="range" min="1" max="6" step="1" />
+        </label>
+
+        <div id="diagnostics" class="diagnostics"></div>
+      </section>
+    </main>
+
+    <script type="module" src="./taskpane.ts"></script>
+  </body>
+</html>

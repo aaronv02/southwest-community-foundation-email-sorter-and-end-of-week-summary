@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Inbox Steward - Outlook add-in manifest (XML / add-in-only manifest).
+
+  Deliberately XML rather than the unified JSON manifest: unified manifests are
+  not supported on Outlook for Mac or mobile, and item multi-select under a
+  unified manifest is classic-Windows-only. XML keeps every client available.
+
+  Before sideloading, replace every occurrence of the host below with your own
+  deployed origin (see README: "Deploy"). Every URL must be HTTPS.
+-->
+<OfficeApp
+  xmlns="http://schemas.microsoft.com/office/appforoffice/1.1"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:bt="http://schemas.microsoft.com/office/officeappbasictypes/1.0"
+  xmlns:mailappor="http://schemas.microsoft.com/office/mailappversionoverrides/1.0"
+  xsi:type="MailApp">
+
+  <Id>3a1b9c44-7f2e-4d58-9b6a-5c0e8d21f7a3</Id>
+  <Version>0.1.0</Version>
+  <ProviderName>Inbox Steward</ProviderName>
+  <DefaultLocale>en-US</DefaultLocale>
+  <DisplayName DefaultValue="Inbox Steward"/>
+  <Description DefaultValue="Categorizes your mail automatically, learns from your corrections, and teaches Outlook's own rules to keep doing it."/>
+  <IconUrl DefaultValue="https://inbox-steward.pages.dev/icon-64.png"/>
+  <HighResolutionIconUrl DefaultValue="https://inbox-steward.pages.dev/icon-128.png"/>
+  <SupportUrl DefaultValue="https://inbox-steward.pages.dev/"/>
+
+  <AppDomains>
+    <AppDomain>https://login.microsoftonline.com</AppDomain>
+  </AppDomains>
+
+  <Hosts>
+    <Host Name="Mailbox"/>
+  </Hosts>
+
+  <Requirements>
+    <!--
+      1.8 is the floor: masterCategories (needed to create the category list
+      before any category can be applied) arrived in 1.8, and classic Outlook
+      for Mac tops out at exactly 1.8. Newer capabilities - item multi-select
+      (1.13), loadItemByIdAsync (1.15), NestedAppAuth (1.1) - are
+      feature-detected at runtime instead of required here, so the add-in
+      still loads on lower-capability clients in degraded form.
+    -->
+    <Sets DefaultMinVersion="1.8">
+      <Set Name="Mailbox"/>
+    </Sets>
+  </Requirements>
+
+  <FormSettings>
+    <Form xsi:type="ItemRead">
+      <DesktopSettings>
+        <SourceLocation DefaultValue="https://inbox-steward.pages.dev/taskpane.html"/>
+        <RequestedHeight>400</RequestedHeight>
+      </DesktopSettings>
+    </Form>
+  </FormSettings>
+
+  <!--
+    ReadWriteMailbox is required to manage the mailbox master category list.
+    Nothing less will do: ReadWriteItem only reaches the current item.
+  -->
+  <Permissions>ReadWriteMailbox</Permissions>
+
+  <Rule xsi:type="RuleCollection" Mode="Or">
+    <Rule xsi:type="ItemIs" ItemType="Message" FormType="Read"/>
+  </Rule>
+
+  <DisableEntityHighlighting>false</DisableEntityHighlighting>
+
+  <VersionOverrides xmlns="http://schemas.microsoft.com/office/mailappversionoverrides" xsi:type="VersionOverridesV1_0">
+    <Requirements>
+      <bt:Sets DefaultMinVersion="1.8">
+        <bt:Set Name="Mailbox"/>
+      </bt:Sets>
+    </Requirements>
+
+    <Hosts>
+      <Host xsi:type="MailHost">
+
+        <DesktopFormFactor>
+          <FunctionFile resourceid="functionFile"/>
+
+          <!-- Reading a single message: sort button available in the ribbon. -->
+          <ExtensionPoint xsi:type="MessageReadCommandSurface">
+            <OfficeTab id="TabDefault">
+              <Group id="isGroup">
+                <Label resid="groupLabel"/>
+                <Control xsi:type="Button" id="isOpenPane">
+                  <Label resid="paneButtonLabel"/>
+                  <Supertip>
+                    <Title resid="paneButtonLabel"/>
+                    <Description resid="paneButtonTip"/>
+                  </Supertip>
+                  <Icon>
+                    <bt:Image size="16" resid="icon16"/>
+                    <bt:Image size="32" resid="icon32"/>
+                    <bt:Image size="80" resid="icon80"/>
+                  </Icon>
+                  <Action xsi:type="ShowTaskpane">
+                    <SourceLocation resid="taskpaneUrl"/>
+                  </Action>
+                </Control>
+              </Group>
+            </OfficeTab>
+          </ExtensionPoint>
+
+        </DesktopFormFactor>
+      </Host>
+    </Hosts>
+
+    <Resources>
+      <bt:Images>
+        <bt:Image id="icon16" DefaultValue="https://inbox-steward.pages.dev/icon-16.png"/>
+        <bt:Image id="icon32" DefaultValue="https://inbox-steward.pages.dev/icon-32.png"/>
+        <bt:Image id="icon80" DefaultValue="https://inbox-steward.pages.dev/icon-80.png"/>
+      </bt:Images>
+      <bt:Urls>
+        <bt:Url id="taskpaneUrl" DefaultValue="https://inbox-steward.pages.dev/taskpane.html"/>
+        <bt:Url id="functionFile" DefaultValue="https://inbox-steward.pages.dev/taskpane.html"/>
+      </bt:Urls>
+      <bt:ShortStrings>
+        <bt:String id="groupLabel" DefaultValue="Inbox Steward"/>
+        <bt:String id="paneButtonLabel" DefaultValue="Sort inbox"/>
+      </bt:ShortStrings>
+      <bt:LongStrings>
+        <bt:String id="paneButtonTip" DefaultValue="Open Inbox Steward to categorize new mail and review its suggestions."/>
+      </bt:LongStrings>
+    </Resources>
+  </VersionOverrides>
+</OfficeApp>

@@ -1,0 +1,126 @@
+TALKING TO CLAUDE ABOUT YOUR EMAIL
+==================================
+
+Once connected, you can open Claude and ask about your Outlook in plain
+English. You don't need to learn any commands - just say what you want.
+
+
+FIRST, AFTER CONNECTING
+-----------------------
+
+Quit Claude completely and reopen it. Closing the window is not enough:
+right-click the Claude icon in the system tray (near the clock, bottom-right)
+and choose Quit, then open it again.
+
+You'll know it worked if you ask "what emails am I forgetting?" and it answers
+with real messages instead of saying it can't see your email.
+
+
+THINGS TO ASK
+-------------
+
+Catching up
+
+    "what emails am I forgetting?"
+    "who is waiting on me?"
+    "anything I've left hanging more than a week?"
+    "how was my week?"
+    "catch me up, I was out Tuesday and Wednesday"
+
+Finding things
+
+    "anything from Tessa this month?"
+    "what did I tell the board about the audit?"
+    "show me unread mail about grants"
+    "did I ever reply to that bequest question?"
+
+Planning
+
+    "what's coming up next week?"
+    "any meetings I haven't responded to?"
+    "what do I need to prepare for?"
+
+Sorting
+
+    "sort my emails"
+    "sort the next 50"
+
+Drafting - this is where it gets genuinely useful
+
+    "what am I forgetting? draft replies to the top three"
+    "read the Mancos Valley one and help me answer it"
+    "write a polite holding reply to the reporter saying I'll
+     get back to her Monday"
+
+It can read a full message and help you write the answer. It cannot send
+anything - you copy the draft into Outlook yourself.
+
+
+ABOUT SORTING
+-------------
+
+When you say "sort my emails", Claude reads recent unlabelled mail and
+proposes a colored label for each one. It shows you the list first.
+
+Nothing changes until you say yes.
+
+If it gets one wrong, just tell it: "no, the Ballantine one is a scholarship
+thing" and it will correct that before applying. You can also change any label
+in Outlook afterwards the normal way.
+
+It works in batches of about 50 so it doesn't use up your Claude allowance in
+one go. Say "sort the next 50" to continue.
+
+The labels are:
+
+    Donors & Gifts        donors, gifts, fund questions, planned giving
+    Grants                LOIs, applications, grant reports, LAUNCH Fund
+    Scholarships          students, committees, disbursements, schools
+    Board & Governance    agendas, minutes, policies, board business
+    Finance               statements, payouts, invoices, bookkeeping, 990
+    Events                Wine Experience, Hoedown, 19th Hole, sponsors
+    Nonprofit Partners    fiscal sponsorship, workshops, capacity building
+    Press & Community     reporters, interviews, awards, speaking
+    Sector News           Council on Foundations, Candid, newsletters
+    Vendors & Admin       software, IT, office, subscriptions
+    Needs Review          it wasn't sure - worth a look
+
+If those categories aren't right for how you actually work, say so. They can
+be renamed or changed.
+
+
+WHAT IT CANNOT DO
+-----------------
+
+It cannot send email, delete anything, or move messages between folders. The
+only change it can make is adding a colored label, and only after you agree.
+
+It only sees what's in Outlook. Phone calls, site visits, and anything in the
+grants database are invisible to it. It knows how you replied to a meeting
+invite, not whether you actually went.
+
+It only works while Claude is open on this computer. Your Friday summary email
+is separate and arrives whether or not Claude is running.
+
+
+IF IT STOPS WORKING
+-------------------
+
+Ask Claude "what tools do you have?" - it should list things like
+whats_waiting and sort. If it doesn't:
+
+  1. Quit Claude completely (system tray, right-click, Quit) and reopen it.
+  2. If that doesn't fix it, double-click "Connect To Claude.cmd" again.
+  3. If it still fails, there's a log at:
+       %APPDATA%\SWCFDigest\digest.log
+     Send the last few lines to whoever set this up.
+
+
+ABOUT YOUR PRIVACY
+------------------
+
+When you ask Claude about your email, the messages it reads become part of
+that conversation - the same as if you had pasted them in yourself. That
+includes donor names and amounts when those appear in the mail it reads.
+
+If you'd rather keep a particular thread out of it, don't ask about it.

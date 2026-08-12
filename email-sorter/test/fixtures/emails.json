@@ -1,0 +1,378 @@
+[
+  {
+    "from": "margaret.holloway@gmail.com",
+    "fromName": "Margaret Holloway",
+    "subject": "Adding to the Holloway Family Fund before year end",
+    "preview": "Hi the director, Jim and I would like to add to our donor advised fund before December 31. We're thinking about $25,000, possibly in appreciated stock rather than cash this time. Could you send me the transfer instructions and let me know what your broker needs?",
+    "expected": "donors"
+  },
+  {
+    "from": "rterwilliger@outlook.com",
+    "fromName": "Robert Terwilliger",
+    "subject": "Question about naming a fund for my late wife",
+    "preview": "the director, after Ellen passed I've been thinking about establishing something in her name that supports literacy work in Montezuma County. I don't know whether that's a field of interest fund or a designated fund. Could we meet in Cortez sometime this month?",
+    "expected": "donors"
+  },
+  {
+    "from": "j.whitaker@whitakerranch.net",
+    "fromName": "Jeanne Whitaker",
+    "subject": "IRA qualified charitable distribution - confirmation?",
+    "preview": "My financial advisor sent the QCD from my IRA last week, $18,000, directed to the Ballantine Family Fund. Can you confirm it arrived and send an acknowledgment letter for my tax records?",
+    "expected": "donors"
+  },
+  {
+    "from": "dcastellano@fourcornerslaw.com",
+    "fromName": "Diane Castellano",
+    "subject": "Client bequest naming the Foundation",
+    "preview": "the director, I'm working with a client who wants to name the Community Foundation as a residual beneficiary in her will. She'd like the proceeds to support scholarships for Ignacio High School graduates. Can you send me your legal name and EIN, and any preferred bequest language?",
+    "expected": "donors"
+  },
+  {
+    "from": "100womenpagosa@gmail.com",
+    "fromName": "Pagosa's 100+ Women Who Care",
+    "subject": "Our giving circle's spring distribution",
+    "preview": "Hi the director! Our members voted last night and we'd like to direct this cycle's pooled gift of $11,400 through the Foundation. Who should I coordinate with on the paperwork?",
+    "expected": "donors"
+  },
+
+  {
+    "from": "director@mancosvalleyresources.org",
+    "fromName": "Tessa Nunn",
+    "subject": "Letter of inquiry - Mancos Valley Resource Center",
+    "preview": "Dear Ms. Wrinkle, Please find attached our letter of inquiry requesting $35,000 over two years to expand our food security program in Mancos. We serve approximately 400 households annually and have attached our most recent audited financials.",
+    "hasAttachments": true,
+    "expected": "grants"
+  },
+  {
+    "from": "grants@sanjuanmountainsassoc.org",
+    "fromName": "Aaron Pruzan",
+    "subject": "LAUNCH Fund application - trail stewardship pilot",
+    "preview": "Submitting our LAUNCH application for the trail stewardship apprenticeship pilot. Total request is $20,000. Let me know if the budget template needs to be on your form rather than ours.",
+    "hasAttachments": true,
+    "expected": "grants"
+  },
+  {
+    "from": "kbaptiste@pinerivervalley.org",
+    "fromName": "Kim Baptiste",
+    "subject": "Final grant report - 2025 youth mentoring award",
+    "preview": "Attached is our final report on the $15,000 youth mentoring grant, including outcomes against the metrics we proposed and a financial reconciliation. We served 62 youth against a target of 50.",
+    "hasAttachments": true,
+    "expected": "grants"
+  },
+  {
+    "from": "ed@archuletahousingcoalition.org",
+    "fromName": "Marcus Delgado",
+    "subject": "Following up on our declined request",
+    "preview": "the director, thank you for the call yesterday. I understand the committee's concerns about our capacity. Would it be worth resubmitting in the fall cycle with a smaller scope, or should we wait a full year?",
+    "expected": "grants"
+  },
+  {
+    "from": "reliefrequests@durangoneighbors.org",
+    "fromName": "Durango Neighbors United",
+    "subject": "Community Emergency Relief Fund - urgent request",
+    "preview": "We have six families displaced by the apartment fire on East 3rd. Requesting $8,500 from the Community Emergency Relief Fund for immediate housing assistance. Can this move quickly?",
+    "expected": "grants"
+  },
+
+  {
+    "from": "elena.marquez2027@student.durangoschools.org",
+    "fromName": "Elena Marquez",
+    "subject": "Scholarship application question - transcript deadline",
+    "preview": "Hello, I am applying for the Ballantine scholarship and my counselor says my official transcript won't be ready until after your March 15 deadline. Will an unofficial copy work for now?",
+    "expected": "scholarships"
+  },
+  {
+    "from": "tbrennan@bayfieldschools.net",
+    "fromName": "Tom Brennan",
+    "subject": "Recommendation letter for Sofia Ruiz",
+    "preview": "Attached please find my letter of recommendation for Sofia Ruiz, who is applying for your scholarship program. She has been in my AP Biology class for two years and is exceptional.",
+    "hasAttachments": true,
+    "expected": "scholarships"
+  },
+  {
+    "from": "pmontoya@frontier.net",
+    "fromName": "Patricia Montoya",
+    "subject": "Scholarship committee - can we move the review meeting?",
+    "preview": "the director, three of us have a conflict on the 12th. Could the scholarship review committee meet on the 14th instead? We still have 47 applications to get through before awards go out.",
+    "expected": "scholarships"
+  },
+  {
+    "from": "finaid@fortlewis.edu",
+    "fromName": "Fort Lewis College Financial Aid",
+    "subject": "Enrollment verification for scholarship disbursement",
+    "preview": "This letter verifies that the following students are enrolled full-time for the fall semester and are eligible to receive outside scholarship disbursements. Please remit payment to the student accounts office.",
+    "expected": "scholarships"
+  },
+  {
+    "from": "jharrison@gmail.com",
+    "fromName": "Joan Harrison",
+    "subject": "Who received the Harrison Memorial Scholarship this year?",
+    "preview": "the director, we'd love to know who received my father's scholarship this year, and whether we might meet them at the awards ceremony. It means a great deal to our family to see it continuing.",
+    "expected": "scholarships"
+  },
+
+  {
+    "from": "cwexler@wexlercpa.com",
+    "fromName": "Charles Wexler",
+    "subject": "Board packet for the March 19 meeting",
+    "preview": "Attached is the full board packet: agenda, February minutes, the finance committee report, and the draft investment policy revision for discussion. Please review the policy language before we convene.",
+    "hasAttachments": true,
+    "expected": "board"
+  },
+  {
+    "from": "lstonebrook@stonebrookdesign.com",
+    "fromName": "Lydia Stonebrook",
+    "subject": "Resigning from the governance committee",
+    "preview": "the director, with my move to Denver in June I need to step off the governance committee, though I'd like to stay on the board through the end of my term. Happy to help identify a successor.",
+    "expected": "board"
+  },
+  {
+    "from": "rvigil@vigilconstruction.net",
+    "fromName": "Ray Vigil",
+    "subject": "Conflict of interest disclosure form - signed",
+    "preview": "Here's my signed conflict of interest disclosure for the year. I've noted the Vigil Construction bid on the Mancos Opera House work as a potential conflict and will recuse myself from that vote.",
+    "hasAttachments": true,
+    "expected": "board"
+  },
+  {
+    "from": "boardchair@swcommunityfoundation.org",
+    "fromName": "Helen Ortega",
+    "subject": "Executive session before the retreat - strategic plan",
+    "preview": "the director, I'd like fifteen minutes in executive session before the retreat begins to discuss the strategic plan timeline and your own goals for the coming year. Does 8:45 work?",
+    "expected": "board"
+  },
+  {
+    "from": "nominations@swcommunityfoundation.org",
+    "fromName": "Board Nominating Committee",
+    "subject": "Three candidates for the two open board seats",
+    "preview": "The nominating committee has narrowed to three candidates for the two open seats. Bios attached. We'd like to bring a slate to the full board in April, so please share any concerns this week.",
+    "hasAttachments": true,
+    "expected": "board"
+  },
+
+  {
+    "from": "statements@vanguardcharitable.org",
+    "fromName": "Vanguard Charitable",
+    "subject": "Quarterly investment statement - Q2 2026",
+    "preview": "Your quarterly statement is now available. Total portfolio value as of June 30, 2026: $13,642,891.14. Net investment return for the quarter was 3.2%. Log in to view detailed holdings and transactions.",
+    "expected": "finance"
+  },
+  {
+    "from": "noreply@coloradogives.org",
+    "fromName": "ColoradoGives",
+    "subject": "Disbursement report - donations processed June 2026",
+    "preview": "Your June disbursement of $47,213.88 representing 214 donations has been transferred to your account ending in 4471. A detailed donor report including designations is attached as CSV.",
+    "hasAttachments": true,
+    "expected": "finance"
+  },
+  {
+    "from": "mfoster@fostergreenecpa.com",
+    "fromName": "Michelle Foster",
+    "subject": "990 preparation - need your grant schedule",
+    "preview": "the director, to finish the 990 I need the complete grants paid schedule for the fiscal year, broken out by recipient EIN, plus documentation for the three grants over $50,000. Can your bookkeeper pull that?",
+    "expected": "finance"
+  },
+  {
+    "from": "ar@durangoheraldmedia.com",
+    "fromName": "Durango Herald Billing",
+    "subject": "Invoice 88214 - past due",
+    "preview": "Invoice 88214 in the amount of $1,240.00 for advertising placements in April and May is now 45 days past due. Please remit payment or contact our accounts receivable department.",
+    "expected": "finance"
+  },
+  {
+    "from": "alerts@firstsouthwestbank.com",
+    "fromName": "First Southwest Bank",
+    "subject": "Wire transfer confirmation - outgoing $138,340.00",
+    "preview": "This confirms an outgoing wire transfer of $138,340.00 initiated on your operating account. If you did not authorize this transaction, contact us immediately at the number on the back of your card.",
+    "expected": "finance"
+  },
+
+  {
+    "from": "events@durangowineexperience.com",
+    "fromName": "Durango Wine Experience",
+    "subject": "Grand Tasting layout and pour volunteers",
+    "preview": "Attached is the floor plan for the Grand Tasting. We're short eight pour volunteers for the Saturday afternoon session and need the final vendor count by Friday to finalize glassware.",
+    "hasAttachments": true,
+    "expected": "events"
+  },
+  {
+    "from": "bookings@mancosoperahouse.org",
+    "fromName": "Mancos Opera House",
+    "subject": "Hoedown - contract and load-in times",
+    "preview": "Confirming the Hoedown date. Load-in can start at 2pm, doors at 6. Our capacity is 240 seated. Attached is the venue agreement; we need a signed copy and the certificate of insurance two weeks out.",
+    "hasAttachments": true,
+    "expected": "events"
+  },
+  {
+    "from": "sponsorships@alpinebankco.com",
+    "fromName": "Alpine Bank Sponsorships",
+    "subject": "Alpine Bank - presenting sponsor for Pitch Palooza",
+    "preview": "We'd like to come in at the presenting sponsor level for Payroll Department's Pitch Palooza this year, $15,000. Please send the sponsorship agreement and your logo specifications for our marketing team.",
+    "expected": "events"
+  },
+  {
+    "from": "chef@seasonsofdurango.com",
+    "fromName": "Seasons Catering",
+    "subject": "Menu and headcount for the Speaker Series dinner",
+    "preview": "Hi the director, for the Making a Difference Speaker Series dinner I have you at 85 guests. I need the final count and any dietary restrictions by Monday. Passed appetizers plus plated entree as discussed.",
+    "expected": "events"
+  },
+  {
+    "from": "pro@daltonranchgolf.com",
+    "fromName": "Dalton Ranch Golf Club",
+    "subject": "19th Hole Concerts - stage placement and permits",
+    "preview": "We need to sort out stage placement for the 19th Hole Concerts series. Also the county wants the noise permit application 30 days ahead this year, which puts us at a deadline of next week.",
+    "expected": "events"
+  },
+
+  {
+    "from": "director@fourcornersartsalliance.org",
+    "fromName": "Priya Raghavan",
+    "subject": "Interested in fiscal sponsorship for a new collective",
+    "preview": "A group of us are starting a youth arts collective in Cortez and we're not ready to incorporate. Could the Foundation act as our fiscal sponsor while we get established? What's your fee structure?",
+    "expected": "partners"
+  },
+  {
+    "from": "gwendolyn@animasriverwatershed.org",
+    "fromName": "Gwendolyn Pike",
+    "subject": "Registering two staff for Tips & Tricks",
+    "preview": "I'd like to register myself and our development coordinator for next month's Tips & Tricks session on donor retention. Is there still room, and is there a cost for partner organizations?",
+    "expected": "partners"
+  },
+  {
+    "from": "ed@pagosayouthcenter.org",
+    "fromName": "Danielle Yoxsimer",
+    "subject": "Help thinking through a merger conversation",
+    "preview": "the director, we've been approached about merging with another youth organization and frankly I'm out of my depth. Not asking for money - just wondering if you'd be willing to talk it through with me.",
+    "expected": "partners"
+  },
+  {
+    "from": "intern.program@swcommunityfoundation.org",
+    "fromName": "CAUSE Youth Internship",
+    "subject": "Host site agreements for summer interns",
+    "preview": "Six nonprofits have signed on as CAUSE host sites and two more are considering. Attached are the signed host agreements. We still need supervisor training scheduled before placements begin June 1.",
+    "hasAttachments": true,
+    "expected": "partners"
+  },
+  {
+    "from": "agencyfunds@lpcountyhumane.org",
+    "fromName": "La Plata County Humane Society",
+    "subject": "Our agency fund - can we increase the annual draw?",
+    "preview": "Our board is asking whether we can increase the annual distribution from our agency fund from 4% to 5% given the shelter expansion. What does your spending policy allow?",
+    "expected": "partners"
+  },
+
+  {
+    "from": "jromero@durangoherald.com",
+    "fromName": "Jessica Romero",
+    "subject": "Interview request - regional giving trends story",
+    "preview": "Hi the director, I'm working on a piece about whether giving in the five-county region has recovered to pre-2020 levels. Would you have 30 minutes this week? I'd also love your Q2 grant numbers if they're public.",
+    "expected": "press"
+  },
+  {
+    "from": "producer@kdurradio.org",
+    "fromName": "Sam Whitcomb",
+    "subject": "Local Voices podcast - would you come on?",
+    "preview": "We'd love to have you on Local Voices to talk about the Foundation's 25th anniversary and what's changed in regional philanthropy. We record Tuesdays, about 45 minutes, very informal.",
+    "expected": "press"
+  },
+  {
+    "from": "awards@durangochamber.org",
+    "fromName": "Durango Chamber of Commerce",
+    "subject": "You've been nominated - Community Ambassador Award",
+    "preview": "Congratulations! You have been nominated for this year's Community Ambassador Award. The recognition luncheon is May 8 at the DoubleTree. Please confirm whether you'll accept the nomination.",
+    "expected": "press"
+  },
+  {
+    "from": "info@sanjuancitizens.org",
+    "fromName": "San Juan Citizens Alliance",
+    "subject": "Community forum on housing - would you speak?",
+    "preview": "We're convening a community forum on the regional housing crunch and would like a philanthropic perspective on the panel. Thursday the 22nd, 6pm at the library. About 15 minutes plus Q&A.",
+    "expected": "press"
+  },
+  {
+    "from": "editor@thejournal.com",
+    "fromName": "Cortez Journal",
+    "subject": "Fact check - your grant total for the story",
+    "preview": "Before we go to print tomorrow, can you confirm the figure of $2.1 million in grants facilitated this quarter, and that it was across 301 transactions? Want to make sure we have it right.",
+    "expected": "press"
+  },
+
+  {
+    "from": "news@cof.org",
+    "fromName": "Council on Foundations",
+    "subject": "This week in philanthropy: DAF regulations, workforce data",
+    "preview": "In this issue: Treasury releases long-awaited donor advised fund guidance, new data on the nonprofit workforce shortage, and registration opens for the annual conference. Read online. Unsubscribe.",
+    "listId": "<cof-weekly.cof.org>",
+    "expected": "sector"
+  },
+  {
+    "from": "updates@coloradononprofits.org",
+    "fromName": "Colorado Nonprofit Association",
+    "subject": "Legislative update: three bills affecting nonprofits",
+    "preview": "The session is heating up. We're tracking three bills that would affect nonprofit reporting requirements and one on charitable solicitation registration. Members can join our Thursday briefing call.",
+    "listId": "<cna-updates.coloradononprofits.org>",
+    "expected": "sector"
+  },
+  {
+    "from": "noreply@philanthropy.com",
+    "fromName": "Chronicle of Philanthropy",
+    "subject": "The 2026 Philanthropy 400 is out",
+    "preview": "Our annual ranking of the nonprofits that raise the most from private sources. Plus: why community foundations are rethinking spending policies, and a look at giving circle growth. Manage preferences.",
+    "listId": "<chronicle.philanthropy.com>",
+    "expected": "sector"
+  },
+  {
+    "from": "webinars@candid.org",
+    "fromName": "Candid Learning",
+    "subject": "Free webinar: telling your impact story with data",
+    "preview": "Join us Wednesday at 2pm ET for a free session on using data visualization in grant reporting. Registration is free for all Candid users. Can't make it? Registrants get the recording. Unsubscribe here.",
+    "listId": "<candid-learning.candid.org>",
+    "expected": "sector"
+  },
+  {
+    "from": "membership@philanthropycolorado.org",
+    "fromName": "Philanthropy Colorado",
+    "subject": "Save the date: 2026 statewide funders convening",
+    "preview": "Mark your calendar for the statewide funders convening in Colorado Springs this October. Early registration opens in July. This year's theme is rural capacity and trust-based practice. Unsubscribe.",
+    "listId": "<pc-members.philanthropycolorado.org>",
+    "expected": "sector"
+  },
+
+  {
+    "from": "account-security-noreply@microsoft.com",
+    "fromName": "Microsoft account team",
+    "subject": "Your Microsoft 365 Business Standard subscription renews soon",
+    "preview": "Your subscription for 8 users renews on August 14, 2026. The card ending in 8832 will be charged $1,200.00 annually. To change your plan or payment method, visit the Microsoft 365 admin center.",
+    "expected": "vendors"
+  },
+  {
+    "from": "support@blackbaud.com",
+    "fromName": "Blackbaud Support",
+    "subject": "Scheduled maintenance this weekend",
+    "preview": "Your database will be unavailable Saturday from 10pm to 2am Mountain for scheduled maintenance. No action is required. We recommend against scheduling imports during this window.",
+    "expected": "vendors"
+  },
+  {
+    "from": "service@fourcornersit.net",
+    "fromName": "Four Corners IT",
+    "subject": "Workstation replacement quote",
+    "preview": "Attached is the quote for replacing the three oldest workstations, including migration and disposal of the old units. Total is $4,180. Lead time is about two weeks once you approve.",
+    "hasAttachments": true,
+    "expected": "vendors"
+  },
+  {
+    "from": "propertymanager@collegedriveplaza.com",
+    "fromName": "College Drive Plaza",
+    "subject": "Parking lot resurfacing - suite 1 access",
+    "preview": "We're resurfacing the lot the week of the 15th. Access to Suite 1 will be from the rear entrance only on Tuesday and Wednesday. Please let your staff and visitors know.",
+    "expected": "vendors"
+  },
+  {
+    "from": "no-reply@zoom.us",
+    "fromName": "Zoom",
+    "subject": "Your cloud recording storage is nearly full",
+    "preview": "Your account has used 92% of its cloud recording storage. Recordings older than 120 days will be deleted automatically unless you download them or upgrade your storage plan.",
+    "expected": "vendors"
+  }
+]

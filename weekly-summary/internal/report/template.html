@@ -1,0 +1,298 @@
+<!--
+  Weekly digest email.
+
+  Table layout and inline styles only: Outlook on Windows renders mail through
+  Word, which drops flexbox, grid, and most modern CSS. Anything fancier looks
+  correct in a browser preview and broken in her actual inbox.
+-->
+<div style="margin:0;padding:0;background:#f3f2f1;font-family:'Segoe UI',Calibri,Arial,sans-serif;color:#201f1e;">
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background:#f3f2f1;padding:16px 0;">
+<tr><td align="center">
+
+<table role="presentation" width="640" cellpadding="0" cellspacing="0" border="0" style="width:640px;max-width:100%;background:#ffffff;border:1px solid #e1dfdd;">
+
+  <!-- Header -->
+  <tr>
+    <td style="background:#0f6cbd;padding:20px 24px;">
+      <div style="color:#ffffff;font-size:20px;font-weight:600;line-height:1.3;">
+        {{ if .Window.CatchUp }}Last week in review{{ else }}Your week in review{{ end }}
+      </div>
+      <div style="color:#cfe4f7;font-size:13px;padding-top:4px;">
+        {{ .Window.Describe }}
+      </div>
+    </td>
+  </tr>
+
+  {{ if .Window.CatchUp }}
+  <tr>
+    <td style="padding:12px 24px;background:#fff4ce;color:#6b5900;font-size:12px;line-height:1.5;">
+      This covers last week. The summary didn't run on Friday — most likely the
+      computer was off or asleep — so it ran at the next opportunity.
+    </td>
+  </tr>
+  {{ end }}
+
+  <!-- ================= Still waiting on you ================= -->
+  <tr>
+    <td style="padding:22px 24px 0 24px;">
+      <div style="font-size:16px;font-weight:600;border-left:4px solid #a4262c;padding-left:10px;">
+        Still waiting on you
+      </div>
+
+      {{ if .Waiting }}
+      <div style="font-size:12px;color:#605e5c;padding:6px 0 0 14px;">
+        Sent directly to you, never replied to. Oldest first.
+      </div>
+
+      <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="margin-top:10px;">
+        {{ range limitWaiting 12 .Waiting }}
+        <tr>
+          <td style="padding:9px 0;border-bottom:1px solid #edebe9;">
+            <div style="font-size:14px;font-weight:600;">{{ subject .Message.Subject }}</div>
+            <div style="font-size:12px;color:#605e5c;padding-top:2px;">
+              {{ .Message.FromName }}
+              &nbsp;·&nbsp;
+              <span style="color:#a4262c;font-weight:600;">waiting {{ age .Age }}</span>
+              {{ if .Message.HasAttachments }}&nbsp;·&nbsp;has attachments{{ end }}
+            </div>
+          </td>
+        </tr>
+        {{ end }}
+      </table>
+
+      {{ if gt (len .Waiting) 12 }}
+      <div style="font-size:12px;color:#605e5c;padding-top:8px;">
+        …and {{ sub (len .Waiting) 12 }} more.
+      </div>
+      {{ end }}
+
+      {{ else }}
+      <div style="font-size:13px;color:#107c10;padding:8px 0 0 14px;">
+        Nothing outstanding — every email addressed to you has a reply.
+      </div>
+      {{ end }}
+    </td>
+  </tr>
+
+  <!-- ================= Flagged ================= -->
+  {{ if .Flagged }}
+  <tr>
+    <td style="padding:22px 24px 0 24px;">
+      <div style="font-size:16px;font-weight:600;border-left:4px solid #d83b01;padding-left:10px;">
+        Flagged and still open
+      </div>
+      <div style="font-size:12px;color:#605e5c;padding:6px 0 0 14px;">
+        You marked these to come back to.
+      </div>
+      <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="margin-top:10px;">
+        {{ range limitMessages 8 .Flagged }}
+        <tr>
+          <td style="padding:8px 0;border-bottom:1px solid #edebe9;">
+            <div style="font-size:14px;">{{ subject .Subject }}</div>
+            <div style="font-size:12px;color:#605e5c;padding-top:2px;">
+              {{ .FromName }} · {{ day .ReceivedDateTime }}
+            </div>
+          </td>
+        </tr>
+        {{ end }}
+      </table>
+    </td>
+  </tr>
+  {{ end }}
+
+  <!-- ================= Unread ================= -->
+  <tr>
+    <td style="padding:22px 24px 0 24px;">
+      <div style="font-size:16px;font-weight:600;border-left:4px solid #ca5010;padding-left:10px;">
+        You didn't open these
+      </div>
+
+      {{ if gt .Unread.Total 0 }}
+      <div style="font-size:12px;color:#605e5c;padding:6px 0 0 14px;">
+        {{ .Unread.Total }} unread{{ if gt .Unread.StaleCount 0 }},
+        {{ .Unread.StaleCount }} of them more than a week old{{ end }}.
+      </div>
+
+      {{ if .Unread.People }}
+      <div style="font-size:13px;font-weight:600;padding:12px 0 4px 0;">From people</div>
+      <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
+        {{ range limit 10 .Unread.People }}
+        <tr>
+          <td style="padding:7px 0;border-bottom:1px solid #edebe9;">
+            <div style="font-size:14px;">
+              {{ .Name }}
+              <span style="color:#605e5c;font-size:12px;">
+                — {{ .Count }} {{ plural .Count "message" "messages" }}
+              </span>
+            </div>
+            <div style="font-size:12px;color:#605e5c;padding-top:2px;">
+              {{ joinSubjects .Subjects }}
+            </div>
+          </td>
+        </tr>
+        {{ end }}
+      </table>
+      {{ end }}
+
+      {{ if .Unread.Automated }}
+      <div style="font-size:13px;font-weight:600;padding:14px 0 4px 0;">
+        Newsletters and automated
+      </div>
+      <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
+        {{ range limit 6 .Unread.Automated }}
+        <tr>
+          <td style="padding:5px 0;font-size:13px;color:#605e5c;">
+            {{ .Name }} — {{ .Count }}
+          </td>
+        </tr>
+        {{ end }}
+      </table>
+      {{ end }}
+
+      {{ else }}
+      <div style="font-size:13px;color:#107c10;padding:8px 0 0 14px;">
+        Inbox fully read. Nothing sitting unopened.
+      </div>
+      {{ end }}
+    </td>
+  </tr>
+
+  <!-- ================= Week in review ================= -->
+  <tr>
+    <td style="padding:22px 24px 0 24px;">
+      <div style="font-size:16px;font-weight:600;border-left:4px solid #0f6cbd;padding-left:10px;">
+        What your week looked like
+      </div>
+
+      <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="margin-top:12px;">
+        <tr>
+          <td width="33%" style="padding:10px;background:#faf9f8;border:1px solid #edebe9;text-align:center;">
+            <div style="font-size:22px;font-weight:600;color:#0f6cbd;">{{ .Review.MeetingsHeld }}</div>
+            <div style="font-size:11px;color:#605e5c;">
+              {{ plural .Review.MeetingsHeld "meeting" "meetings" }}
+              {{ if gt .Review.MeetingHours 0.0 }}· {{ hours .Review.MeetingHours }} hrs{{ end }}
+            </div>
+          </td>
+          <td width="33%" style="padding:10px;background:#faf9f8;border:1px solid #edebe9;text-align:center;">
+            <div style="font-size:22px;font-weight:600;color:#0f6cbd;">{{ .Review.EmailsSent }}</div>
+            <div style="font-size:11px;color:#605e5c;">
+              emails sent to {{ .Review.PeopleWrittenTo }} {{ plural .Review.PeopleWrittenTo "person" "people" }}
+            </div>
+          </td>
+          <td width="33%" style="padding:10px;background:#faf9f8;border:1px solid #edebe9;text-align:center;">
+            <div style="font-size:22px;font-weight:600;color:#0f6cbd;">{{ .Review.ThreadsAdvanced }}</div>
+            <div style="font-size:11px;color:#605e5c;">
+              {{ plural .Review.ThreadsAdvanced "thread" "threads" }} you moved forward
+            </div>
+          </td>
+        </tr>
+      </table>
+
+      {{ if .Review.BusiestDay }}
+      <div style="font-size:12px;color:#605e5c;padding-top:8px;">
+        Busiest day: {{ .Review.BusiestDay }}.
+        {{ if gt .Review.MeetingsOrganized 0 }}
+          You organized {{ .Review.MeetingsOrganized }} of the meetings.
+        {{ end }}
+      </div>
+      {{ end }}
+
+      {{ if .Review.Highlights }}
+      <div style="font-size:13px;font-weight:600;padding:14px 0 4px 0;">Bigger commitments</div>
+      <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
+        {{ range .Review.Highlights }}
+        <tr>
+          <td style="padding:6px 0;border-bottom:1px solid #edebe9;">
+            <div style="font-size:13px;">{{ subject .Subject }}</div>
+            <div style="font-size:12px;color:#605e5c;padding-top:2px;">
+              {{ eventStart . }}{{ with eventLength . }} · {{ . }}{{ end }}
+              {{ if gt .HumanAttendeeCount 1 }} · {{ .HumanAttendeeCount }} people{{ end }}
+            </div>
+          </td>
+        </tr>
+        {{ end }}
+      </table>
+      {{ end }}
+    </td>
+  </tr>
+
+  <!-- ================= Calendar ================= -->
+  <tr>
+    <td style="padding:22px 24px 0 24px;">
+      <div style="font-size:16px;font-weight:600;border-left:4px solid #8764b8;padding-left:10px;">
+        Calendar
+      </div>
+
+      {{ if .Calendar.NextWeekUnanswered }}
+      <div style="font-size:13px;font-weight:600;padding:12px 0 4px 0;color:#a4262c;">
+        Next week, awaiting your RSVP
+      </div>
+      <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
+        {{ range limitEvents 6 .Calendar.NextWeekUnanswered }}
+        <tr>
+          <td style="padding:6px 0;border-bottom:1px solid #edebe9;">
+            <div style="font-size:13px;">{{ subject .Subject }}</div>
+            <div style="font-size:12px;color:#605e5c;padding-top:2px;">
+              {{ eventStart . }}{{ with .OrganizerName }} · from {{ . }}{{ end }}
+            </div>
+          </td>
+        </tr>
+        {{ end }}
+      </table>
+      {{ end }}
+
+      {{ if .Calendar.Unanswered }}
+      <div style="font-size:13px;font-weight:600;padding:12px 0 4px 0;">
+        Never responded to (this week)
+      </div>
+      <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
+        {{ range limitEvents 5 .Calendar.Unanswered }}
+        <tr>
+          <td style="padding:5px 0;font-size:13px;color:#605e5c;">
+            {{ subject .Subject }} — {{ eventStart . }}
+          </td>
+        </tr>
+        {{ end }}
+      </table>
+      {{ end }}
+
+      <div style="font-size:13px;font-weight:600;padding:14px 0 4px 0;">Week ahead</div>
+      {{ if .Calendar.NextWeek }}
+      <div style="font-size:12px;color:#605e5c;padding-bottom:6px;">
+        {{ len .Calendar.NextWeek }} {{ plural (len .Calendar.NextWeek) "event" "events" }}
+        {{ if gt .Calendar.NextWeekHours 0.0 }}· {{ hours .Calendar.NextWeekHours }} hours committed{{ end }}
+      </div>
+      <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
+        {{ range limitEvents 8 .Calendar.NextWeek }}
+        <tr>
+          <td style="padding:5px 0;border-bottom:1px solid #edebe9;font-size:13px;">
+            {{ subject .Subject }}
+            <span style="color:#605e5c;font-size:12px;">— {{ eventStart . }}</span>
+          </td>
+        </tr>
+        {{ end }}
+      </table>
+      {{ else }}
+      <div style="font-size:13px;color:#605e5c;">Nothing scheduled yet.</div>
+      {{ end }}
+    </td>
+  </tr>
+
+  <!-- ================= Footer ================= -->
+  <tr>
+    <td style="padding:22px 24px 24px 24px;">
+      <div style="border-top:1px solid #e1dfdd;padding-top:12px;font-size:11px;color:#605e5c;line-height:1.6;">
+        This summarizes what's visible in Outlook — meetings on your calendar and
+        mail in this mailbox. It can't see calls, site visits, or work done in
+        other systems, and it reports how you RSVP'd rather than whether you
+        attended. Treat it as a prompt, not a scorecard.
+        <br><br>
+        Generated {{ dayTime .GeneratedAt }} for {{ .Mailbox }}.
+      </div>
+    </td>
+  </tr>
+
+</table>
+</td></tr>
+</table>
+</div>
