@@ -42,12 +42,22 @@ func newMockGraph(t *testing.T, handler func(m *mockGraph, w http.ResponseWriter
 				http.Error(w, "bad form", http.StatusBadRequest)
 				return
 			}
-			if r.Form.Get("grant_type") != "client_credentials" {
+			// Both flows are legitimate: client_credentials for the unattended
+			// job, refresh_token for a signed-in user (the only option for
+			// personal accounts).
+			switch r.Form.Get("grant_type") {
+			case "client_credentials":
+				if r.Form.Get("scope") != "https://graph.microsoft.com/.default" {
+					http.Error(w, "wrong scope", http.StatusBadRequest)
+					return
+				}
+			case "refresh_token":
+				if r.Form.Get("refresh_token") == "" {
+					http.Error(w, "missing refresh token", http.StatusBadRequest)
+					return
+				}
+			default:
 				http.Error(w, "wrong grant type", http.StatusBadRequest)
-				return
-			}
-			if r.Form.Get("scope") != "https://graph.microsoft.com/.default" {
-				http.Error(w, "wrong scope", http.StatusBadRequest)
 				return
 			}
 			writeJSON(w, map[string]any{
@@ -413,5 +423,134 @@ func TestMessageFilterAndSelectAreEncoded(t *testing.T) {
 	}
 	if !strings.Contains(q, "conversationId") {
 		t.Errorf("select must include conversationId or reply detection breaks: %q", q)
+	}
+}
+
+// ---------------------------------------------------------------------------
+// Delegated (signed-in user) mode
+// ---------------------------------------------------------------------------
+
+// App-only tokens have no user, so they must name the mailbox; delegated tokens
+// address the signed-in user's own mailbox as /me. Sending the wrong one yields
+// a 403 that reads like a permissions problem and sends you hunting in Entra.
+func TestDelegatedModeAddressesTheMailboxAsMe(t *testing.T) {
+	var path atomic.Value
+	m := newMockGraph(t, func(_ *mockGraph, w http.ResponseWriter, r *http.Request) bool {
+		path.Store(r.URL.Path)
+		writeJSON(w, map[string]any{"value": []Message{}})
+		return true
+	})
+
+	c := m.client()
+	c.UseDelegated("fake-refresh-token", nil)
+
+	if _, err := c.InboxSince(context.Background(), time.Now()); err != nil {
+		t.Fatalf("InboxSince: %v", err)
+	}
+
+	got, _ := path.Load().(string)
+	if !strings.Contains(got, "/me/") {
+		t.Errorf("delegated request hit %q, want the /me form", got)
+	}
+	if strings.Contains(got, "/users/") {
+		t.Errorf("delegated request must not name the mailbox: %q", got)
+	}
+}
+
+func TestAppOnlyModeNamesTheMailbox(t *testing.T) {
+	var path atomic.Value
+	m := newMockGraph(t, func(_ *mockGraph, w http.ResponseWriter, r *http.Request) bool {
+		path.Store(r.URL.Path)
+		writeJSON(w, map[string]any{"value": []Message{}})
+		return true
+	})
+
+	if _, err := m.client().InboxSince(context.Background(), time.Now()); err != nil {
+		t.Fatalf("InboxSince: %v", err)
+	}
+
+	got, _ := path.Load().(string)
+	if !strings.Contains(got, "/users/") {
+		t.Errorf("app-only request hit %q, want the /users/{mailbox} form", got)
+	}
+}
+
+func TestDelegatedModeUsesTheRefreshTokenGrant(t *testing.T) {
+	var grantType atomic.Value
+	m := newMockGraph(t, nil)
+	m.server.Config.Handler = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		if strings.Contains(r.URL.Path, "/token") {
+			_ = r.ParseForm()
+			grantType.Store(r.Form.Get("grant_type"))
+			writeJSON(w, map[string]any{
+				"access_token": "delegated-token",
+				"expires_in":   3600,
+			})
+			return
+		}
+		writeJSON(w, map[string]any{"value": []Message{}})
+	})
+
+	c := m.client()
+	c.UseDelegated("fake-refresh-token", nil)
+
+	if _, err := c.InboxSince(context.Background(), time.Now()); err != nil {
+		t.Fatalf("InboxSince: %v", err)
+	}
+
+	if got, _ := grantType.Load().(string); got != "refresh_token" {
+		t.Errorf("grant_type = %q, want refresh_token (client_credentials cannot "+
+			"work for personal accounts)", got)
+	}
+}
+
+// Microsoft rotates refresh tokens. A rotated token that is never persisted
+// means the tool works until the old one expires and then fails permanently,
+// with an error that looks nothing like "we forgot to save something".
+func TestRotatedRefreshTokenIsHandedBackForPersisting(t *testing.T) {
+	var saved atomic.Value
+	m := newMockGraph(t, nil)
+	m.server.Config.Handler = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		if strings.Contains(r.URL.Path, "/token") {
+			writeJSON(w, map[string]any{
+				"access_token":  "delegated-token",
+				"refresh_token": "rotated-token",
+				"expires_in":    3600,
+			})
+			return
+		}
+		writeJSON(w, map[string]any{"value": []Message{}})
+	})
+
+	c := m.client()
+	c.UseDelegated("original-token", func(rotated string) { saved.Store(rotated) })
+
+	if _, err := c.InboxSince(context.Background(), time.Now()); err != nil {
+		t.Fatalf("InboxSince: %v", err)
+	}
+
+	if got, _ := saved.Load().(string); got != "rotated-token" {
+		t.Errorf("rotated token handed back as %q, want %q", got, "rotated-token")
+	}
+}
+
+func TestExpiredSignInPointsAtTheFix(t *testing.T) {
+	m := newMockGraph(t, nil)
+	m.server.Config.Handler = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		writeJSON(w, map[string]any{
+			"error":             "invalid_grant",
+			"error_description": "AADSTS70008: The refresh token has expired.",
+		})
+	})
+
+	c := m.client()
+	c.UseDelegated("stale-token", nil)
+
+	_, err := c.InboxSince(context.Background(), time.Now())
+	if err == nil {
+		t.Fatal("expected an error for an expired sign-in")
+	}
+	if !strings.Contains(err.Error(), "--login") {
+		t.Errorf("the error should tell the user how to recover, got: %v", err)
 	}
 }

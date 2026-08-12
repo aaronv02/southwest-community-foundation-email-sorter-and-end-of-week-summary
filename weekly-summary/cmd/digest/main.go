@@ -26,7 +26,6 @@ import (
 
 	"swcf/digest/internal/analyze"
 	"swcf/digest/internal/config"
-	"swcf/digest/internal/graph"
 	"swcf/digest/internal/report"
 )
 
@@ -45,7 +44,8 @@ const (
 
 func main() {
 	var (
-		setup   = flag.Bool("setup", false, "configure credentials and mailbox")
+		setup   = flag.Bool("setup", false, "configure credentials and mailbox (application auth)")
+		login   = flag.Bool("login", false, "sign in as yourself; works with any account, including outlook.com")
 		check   = flag.Bool("check", false, "verify access and exit")
 		preview = flag.String("preview", "", "write the email to this HTML file instead of sending")
 		dryRun  = flag.Bool("dry-run", false, "do everything except send")
@@ -72,6 +72,13 @@ func main() {
 
 	if *setup {
 		if err := runSetup(); err != nil {
+			fatal(err)
+		}
+		return
+	}
+
+	if *login {
+		if err := runLogin(); err != nil {
 			fatal(err)
 		}
 		return
@@ -136,15 +143,13 @@ func run(check bool, previewPath string, dryRun, force bool, logw io.Writer) err
 		return err
 	}
 
-	secret, err := cfg.Secret()
+	client, err := newClient(cfg)
 	if err != nil {
 		return err
 	}
 
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Minute)
 	defer cancel()
-
-	client := graph.New(cfg.TenantID, cfg.ClientID, secret, cfg.Mailbox, cfg.Timezone)
 
 	if check {
 		if err := client.Ping(ctx); err != nil {
@@ -332,11 +337,10 @@ func runSetup() error {
 
 	fmt.Println()
 	fmt.Print("Verifying access… ")
-	secret, err := cfg.Secret()
+	client, err := newClient(cfg)
 	if err != nil {
 		return err
 	}
-	client := graph.New(cfg.TenantID, cfg.ClientID, secret, cfg.Mailbox, cfg.Timezone)
 	ctx, cancel := context.WithTimeout(context.Background(), 60*time.Second)
 	defer cancel()
 

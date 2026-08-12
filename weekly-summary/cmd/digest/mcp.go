@@ -131,14 +131,14 @@ func runMCP(version string) error {
 	if err != nil {
 		return err
 	}
-	secret, err := cfg.Secret()
+	client, err := newClient(cfg)
 	if err != nil {
 		return err
 	}
 
 	s := &mcpServer{
 		cfg:    cfg,
-		client: graph.New(cfg.TenantID, cfg.ClientID, secret, cfg.Mailbox, cfg.Timezone),
+		client: client,
 		refs:   newRefStore(),
 		out:    bufio.NewWriter(os.Stdout),
 	}

@@ -25,7 +25,7 @@ type OutlookCategory struct {
 
 // MasterCategories lists the categories defined on the mailbox.
 func (c *Client) MasterCategories(ctx context.Context) ([]OutlookCategory, error) {
-	path := fmt.Sprintf("/users/%s/outlook/masterCategories", url.PathEscape(c.mailbox))
+	path := fmt.Sprintf("%s/outlook/masterCategories", c.mailboxPath())
 	return listPaged[OutlookCategory](ctx, c, path)
 }
 
@@ -46,8 +46,8 @@ func (c *Client) EnsureCategories(ctx context.Context, wanted []struct{ Name, Co
 	}
 
 	var created []string
-	endpoint := fmt.Sprintf("%s/users/%s/outlook/masterCategories",
-		c.graphBase, url.PathEscape(c.mailbox))
+	endpoint := fmt.Sprintf("%s%s/outlook/masterCategories",
+		c.graphBase, c.mailboxPath())
 
 	for _, w := range wanted {
 		if have[strings.ToLower(strings.TrimSpace(w.Name))] {
@@ -108,9 +108,11 @@ func (c *Client) ApplyLabels(ctx context.Context, changes []LabelChange) (LabelR
 		requests := make([]map[string]any, 0, len(batch))
 		for i, ch := range batch {
 			requests = append(requests, map[string]any{
-				"id":      fmt.Sprint(i),
-				"method":  "PATCH",
-				"url":     fmt.Sprintf("/users/%s/messages/%s", c.mailbox, ch.MessageID),
+				"id":     fmt.Sprint(i),
+				"method": "PATCH",
+				// Batch sub-request URLs are relative to the Graph root, so they
+				// need the same /me or /users/{mailbox} prefix as a direct call.
+				"url":     fmt.Sprintf("%s/messages/%s", c.mailboxPath(), ch.MessageID),
 				"headers": map[string]string{"Content-Type": "application/json"},
 				"body":    map[string]any{"categories": ch.Categories},
 			})
@@ -163,8 +165,8 @@ func (c *Client) ApplyLabels(ctx context.Context, changes []LabelChange) (LabelR
 
 // MessageByID fetches one full message, including its body.
 func (c *Client) MessageByID(ctx context.Context, id string) (*Message, error) {
-	endpoint := fmt.Sprintf("%s/users/%s/messages/%s?$select=%s,body",
-		c.graphBase, url.PathEscape(c.mailbox), url.PathEscape(id), messageSelect)
+	endpoint := fmt.Sprintf("%s%s/messages/%s?$select=%s,body",
+		c.graphBase, c.mailboxPath(), url.PathEscape(id), messageSelect)
 
 	raw, err := c.do(ctx, http.MethodGet, endpoint, nil)
 	if err != nil {

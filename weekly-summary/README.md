@@ -374,3 +374,40 @@ is no training data — so each one names real programs and states explicitly wh
 does *not* belong. Vague descriptions are the main cause of bad sorting. The
 add-in keeps its own copy in `src/taxonomy.ts`; keep the two in step if you
 change one.
+
+---
+
+## Testing against your own mailbox
+
+App-only authentication **cannot** be used with a personal Microsoft account —
+Microsoft excludes personal accounts from the client-credentials flow entirely.
+For testing, or for any mailbox where app-only is unavailable, sign in as
+yourself instead:
+
+```bash
+digest --login
+```
+
+It prints a code, you enter it at `microsoft.com/devicelogin`, and that is the
+whole flow. No client secret, no admin consent.
+
+You need one Entra app registration, but a minimal one:
+
+1. [Entra portal](https://entra.microsoft.com) → **App registrations** → **New**
+2. Supported account types: **any organizational directory and personal Microsoft accounts**
+3. **Authentication** → **Allow public client flows** → **Yes**
+4. Copy the Application (client) ID — that is all `--login` asks for
+
+Delegated permissions (`Mail.ReadWrite`, `Mail.Send`, `Calendars.Read`) are
+consented by you at sign-in; no administrator is involved.
+
+### Why this is not the default
+
+Delegated refresh tokens expire — through inactivity, a password change, or a
+conditional-access policy — and they do it silently, weeks later, on a machine
+nobody is watching. That is precisely the failure mode a weekly unattended job
+must not have, which is why the scheduled digest uses app-only auth and this
+mode exists for testing and as a fallback.
+
+When the saved sign-in does expire, the error says `Run: digest --login`
+rather than surfacing a raw OAuth code.

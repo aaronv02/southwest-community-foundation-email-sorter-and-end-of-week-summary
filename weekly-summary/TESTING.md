@@ -39,13 +39,38 @@ assumed here, and how Outlook renders the HTML. That needs a real mailbox.
 > them into a real mailbox instead and let the digest read them the way it will
 > read hers.
 
-### 2a. Get a tenant
+### 2a. Get a mailbox you control
 
-Join the [Microsoft 365 Developer Program](https://developer.microsoft.com/microsoft-365/dev-program) —
-free E5 tenant, 25 users, renewable. This matters more than convenience: it
-mirrors the director's environment exactly (work M365, you as admin), whereas a
-personal outlook.com account differs in both add-in rules and Graph behaviour.
-Testing on a personal account risks passing here and failing on delivery.
+> **Correction:** earlier versions of this document recommended the
+> [Microsoft 365 Developer Program](https://developer.microsoft.com/microsoft-365/dev-program)
+> free E5 sandbox. Microsoft has since gated it behind a Visual Studio
+> Professional/Enterprise subscription or Partner Program membership, so it is
+> no longer generally available. Two options remain:
+
+**Option 1 — sign in as yourself (free, no card, any account).**
+
+```bash
+digest --login
+```
+
+Uses the device-code flow: it prints a code, you sign in at
+`microsoft.com/devicelogin`, done. Works with **personal outlook.com accounts**,
+which app-only authentication cannot touch at all — Microsoft excludes personal
+accounts from the client-credentials flow.
+
+You still need an Entra app registration for the client ID, but only a bare one:
+no client secret, no admin consent, no Application permissions. Register it with
+"Accounts in any organizational directory and personal Microsoft accounts" and
+turn on **Allow public client flows**.
+
+This exercises everything that matters — waiting detection, unread grouping,
+rendering, the catch-up window. It cannot test admin consent or the
+access-policy lockdown, which are tenant-only concerns.
+
+**Option 2 — a Microsoft 365 Business Standard trial** (~$12.50/user/month
+after 30 days, **credit card required, auto-renews**). Closer to the production
+environment because you get a real tenant and admin rights, and it is the only
+way to rehearse the app-only path end to end. Set a reminder to cancel.
 
 ### 2b. Register a *seeding* app
 

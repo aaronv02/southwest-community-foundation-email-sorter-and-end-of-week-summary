@@ -25,7 +25,22 @@ type Config struct {
 	// Entra application (client) ID.
 	ClientID string `json:"clientId"`
 	// DPAPI-protected client secret, base64. Never the plaintext.
+	// Only used in app-only mode.
 	ProtectedSecret string `json:"protectedSecret"`
+
+	// "app" (default) authenticates as the application, which is right for an
+	// unattended job but requires an organizational tenant - Microsoft does not
+	// support it for personal accounts at all.
+	//
+	// "delegated" authenticates as a signed-in user. Works with any account
+	// including outlook.com, needs no admin consent and no client secret, but
+	// the saved sign-in expires through inactivity or a password change and
+	// then needs `digest --login` again.
+	AuthMode string `json:"authMode"`
+
+	// DPAPI-protected refresh token for delegated mode. Rotated by Microsoft
+	// on most refreshes, so it is rewritten as the tool runs.
+	ProtectedRefreshToken string `json:"protectedRefreshToken"`
 
 	// The mailbox to analyze, e.g. "director@example.org".
 	Mailbox string `json:"mailbox"`
@@ -145,6 +160,9 @@ func Load() (*Config, error) {
 }
 
 func (c *Config) applyDefaults() {
+	if c.AuthMode == "" {
+		c.AuthMode = "app"
+	}
 	if c.Timezone == "" {
 		c.Timezone = "America/Denver"
 	}
@@ -169,7 +187,12 @@ func (c *Config) Validate() error {
 	if c.ClientID == "" {
 		missing = append(missing, "clientId")
 	}
-	if c.ProtectedSecret == "" {
+	// Delegated mode has no client secret; it has a saved sign-in instead.
+	if c.Delegated() {
+		if c.ProtectedRefreshToken == "" {
+			return fmt.Errorf("not signed in yet - run:  digest --login")
+		}
+	} else if c.ProtectedSecret == "" {
 		missing = append(missing, "client secret")
 	}
 	if c.Mailbox == "" {
@@ -182,6 +205,31 @@ func (c *Config) Validate() error {
 		return fmt.Errorf("unknown timezone %q: %w", c.Timezone, err)
 	}
 	return nil
+}
+
+// Delegated reports whether this config signs in as a user rather than as the
+// application.
+func (c *Config) Delegated() bool {
+	return strings.EqualFold(c.AuthMode, "delegated")
+}
+
+// RefreshToken decrypts the stored sign-in.
+func (c *Config) RefreshToken() (string, error) {
+	return unprotect(c.ProtectedRefreshToken)
+}
+
+// SetRefreshToken encrypts and stores a sign-in, then persists immediately.
+//
+// Saving straight away matters: Microsoft rotates refresh tokens, and a
+// rotated token that is never written to disk means the next run fails with an
+// invalid-grant error that looks like a bug rather than a lost write.
+func (c *Config) SetRefreshToken(token string) error {
+	protected, err := protect(token)
+	if err != nil {
+		return err
+	}
+	c.ProtectedRefreshToken = protected
+	return c.Save()
 }
 
 // Addresses returns every address that counts as "her", primary first.

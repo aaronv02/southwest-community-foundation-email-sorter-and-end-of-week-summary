@@ -45,6 +45,15 @@ type Client struct {
 	graphBase string
 	loginBase string
 
+	// Delegated (signed-in-user) mode. When refreshToken is set the client
+	// authenticates as the user instead of as the application, which is the
+	// only option for personal Microsoft accounts.
+	refreshToken string
+	// Called when Microsoft rotates the refresh token, so it can be persisted.
+	// Without this the tool works until the current token expires, then fails
+	// permanently for no visible reason.
+	onRefreshToken func(string)
+
 	http  *http.Client
 	token string
 	// Slightly before the real expiry, so a long run never trips over it.
@@ -71,6 +80,30 @@ func (c *Client) SetEndpoints(graph, login string) {
 	c.loginBase = login
 }
 
+// UseDelegated switches the client to signed-in-user authentication.
+//
+// onRotate is called whenever Microsoft issues a replacement refresh token and
+// must persist it.
+func (c *Client) UseDelegated(refreshToken string, onRotate func(string)) {
+	c.refreshToken = refreshToken
+	c.onRefreshToken = onRotate
+}
+
+// Delegated reports whether the client authenticates as a user.
+func (c *Client) Delegated() bool { return c.refreshToken != "" }
+
+// mailboxPath is the URL prefix for mailbox-scoped requests.
+//
+// Delegated tokens address the signed-in user's own mailbox as /me. App-only
+// tokens have no user, so they must name the mailbox explicitly. Getting this
+// wrong yields a 403 that reads like a permissions problem.
+func (c *Client) mailboxPath() string {
+	if c.Delegated() {
+		return "/me"
+	}
+	return "/users/" + url.PathEscape(c.mailbox)
+}
+
 // Mailbox returns the mailbox this client reads.
 func (c *Client) Mailbox() string { return c.mailbox }
 
@@ -85,6 +118,10 @@ type tokenResponse struct {
 func (c *Client) accessToken(ctx context.Context) (string, error) {
 	if c.token != "" && time.Now().Before(c.tokenExpiry) {
 		return c.token, nil
+	}
+
+	if c.Delegated() {
+		return c.redeemRefreshToken(ctx)
 	}
 
 	form := url.Values{
@@ -271,9 +308,9 @@ const messageSelect = "id,conversationId,subject,bodyPreview,receivedDateTime,se
 // InboxSince returns inbox messages received at or after the given instant.
 func (c *Client) InboxSince(ctx context.Context, since time.Time) ([]Message, error) {
 	path := fmt.Sprintf(
-		"/users/%s/mailFolders/inbox/messages?$select=%s&$filter=receivedDateTime ge %s"+
+		"%s/mailFolders/inbox/messages?$select=%s&$filter=receivedDateTime ge %s"+
 			"&$orderby=receivedDateTime desc&$top=100",
-		url.PathEscape(c.mailbox), messageSelect, since.UTC().Format(time.RFC3339))
+		c.mailboxPath(), messageSelect, since.UTC().Format(time.RFC3339))
 	return listPaged[Message](ctx, c, encodeQuery(path))
 }
 
@@ -284,9 +321,9 @@ func (c *Client) InboxSince(ctx context.Context, since time.Time) ([]Message, er
 // nag about mail that was already handled.
 func (c *Client) SentSince(ctx context.Context, since time.Time) ([]Message, error) {
 	path := fmt.Sprintf(
-		"/users/%s/mailFolders/sentitems/messages?$select=%s&$filter=sentDateTime ge %s"+
+		"%s/mailFolders/sentitems/messages?$select=%s&$filter=sentDateTime ge %s"+
 			"&$orderby=sentDateTime desc&$top=100",
-		url.PathEscape(c.mailbox), messageSelect, since.UTC().Format(time.RFC3339))
+		c.mailboxPath(), messageSelect, since.UTC().Format(time.RFC3339))
 	return listPaged[Message](ctx, c, encodeQuery(path))
 }
 
@@ -296,9 +333,9 @@ const eventSelect = "id,subject,bodyPreview,start,end,isAllDay,isCancelled,isOrg
 // CalendarView returns events overlapping the window, expanding recurrences.
 func (c *Client) CalendarView(ctx context.Context, start, end time.Time) ([]Event, error) {
 	path := fmt.Sprintf(
-		"/users/%s/calendarView?startDateTime=%s&endDateTime=%s&$select=%s"+
+		"%s/calendarView?startDateTime=%s&endDateTime=%s&$select=%s"+
 			"&$orderby=start/dateTime&$top=100",
-		url.PathEscape(c.mailbox),
+		c.mailboxPath(),
 		start.UTC().Format(time.RFC3339),
 		end.UTC().Format(time.RFC3339),
 		eventSelect)
@@ -355,7 +392,7 @@ func (c *Client) SendMail(ctx context.Context, subject, html string, to []string
 		return err
 	}
 
-	endpoint := fmt.Sprintf("%s/users/%s/sendMail", c.graphBase, url.PathEscape(c.mailbox))
+	endpoint := fmt.Sprintf("%s%s/sendMail", c.graphBase, c.mailboxPath())
 	_, err = c.do(ctx, http.MethodPost, endpoint, payload)
 	return err
 }
@@ -371,8 +408,8 @@ func (c *Client) SendMail(ctx context.Context, subject, html string, to []string
 // folder proves the same thing (we can reach this mailbox) using Mail.Read,
 // which is already needed.
 func (c *Client) Ping(ctx context.Context) error {
-	endpoint := fmt.Sprintf("%s/users/%s/mailFolders/inbox?$select=id,displayName,totalItemCount",
-		c.graphBase, url.PathEscape(c.mailbox))
+	endpoint := fmt.Sprintf("%s%s/mailFolders/inbox?$select=id,displayName,totalItemCount",
+		c.graphBase, c.mailboxPath())
 	_, err := c.do(ctx, http.MethodGet, endpoint, nil)
 	return err
 }

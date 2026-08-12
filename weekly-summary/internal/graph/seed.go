@@ -83,8 +83,8 @@ func (c *Client) CreateMessage(ctx context.Context, m SeedMessage) error {
 		return err
 	}
 
-	endpoint := fmt.Sprintf("%s/users/%s/mailFolders/%s/messages",
-		c.graphBase, url.PathEscape(c.mailbox), folder)
+	endpoint := fmt.Sprintf("%s%s/mailFolders/%s/messages",
+		c.graphBase, c.mailboxPath(), folder)
 	_, err = c.do(ctx, http.MethodPost, endpoint, body)
 	return err
 }
@@ -107,6 +107,8 @@ func (c *Client) SendAs(ctx context.Context, fromMailbox, subject, bodyText stri
 		return err
 	}
 
+	// Always /users/{other} - this sends from a DIFFERENT mailbox, so it can
+	// never use the /me shorthand even in delegated mode.
 	endpoint := fmt.Sprintf("%s/users/%s/sendMail", c.graphBase, url.PathEscape(fromMailbox))
 	_, err = c.do(ctx, http.MethodPost, endpoint, payload)
 	return err
@@ -118,8 +120,8 @@ func (c *Client) ReplyTo(ctx context.Context, messageID, comment string) error {
 	if err != nil {
 		return err
 	}
-	endpoint := fmt.Sprintf("%s/users/%s/messages/%s/reply",
-		c.graphBase, url.PathEscape(c.mailbox), url.PathEscape(messageID))
+	endpoint := fmt.Sprintf("%s%s/messages/%s/reply",
+		c.graphBase, c.mailboxPath(), url.PathEscape(messageID))
 	_, err = c.do(ctx, http.MethodPost, endpoint, payload)
 	return err
 }
@@ -168,7 +170,7 @@ func (c *Client) CreateEvent(ctx context.Context, e SeedEvent, tz string) error 
 	if err != nil {
 		return err
 	}
-	endpoint := fmt.Sprintf("%s/users/%s/events", c.graphBase, url.PathEscape(c.mailbox))
+	endpoint := fmt.Sprintf("%s%s/events", c.graphBase, c.mailboxPath())
 	_, err = c.do(ctx, http.MethodPost, endpoint, body)
 	return err
 }
@@ -176,31 +178,31 @@ func (c *Client) CreateEvent(ctx context.Context, e SeedEvent, tz string) error 
 // SeededMessages finds everything the seeder created.
 func (c *Client) SeededMessages(ctx context.Context) ([]Message, error) {
 	path := fmt.Sprintf(
-		"/users/%s/messages?$select=id,subject,categories&$filter=categories/any(c:c eq '%s')&$top=100",
-		url.PathEscape(c.mailbox), SeedCategory)
+		"%s/messages?$select=id,subject,categories&$filter=categories/any(c:c eq '%s')&$top=100",
+		c.mailboxPath(), SeedCategory)
 	return listPaged[Message](ctx, c, encodeQuery(path))
 }
 
 // SeededEvents finds calendar entries the seeder created.
 func (c *Client) SeededEvents(ctx context.Context) ([]Event, error) {
 	path := fmt.Sprintf(
-		"/users/%s/events?$select=id,subject,categories&$filter=categories/any(c:c eq '%s')&$top=100",
-		url.PathEscape(c.mailbox), SeedCategory)
+		"%s/events?$select=id,subject,categories&$filter=categories/any(c:c eq '%s')&$top=100",
+		c.mailboxPath(), SeedCategory)
 	return listPaged[Event](ctx, c, encodeQuery(path))
 }
 
 // DeleteMessage removes one message.
 func (c *Client) DeleteMessage(ctx context.Context, id string) error {
-	endpoint := fmt.Sprintf("%s/users/%s/messages/%s",
-		c.graphBase, url.PathEscape(c.mailbox), url.PathEscape(id))
+	endpoint := fmt.Sprintf("%s%s/messages/%s",
+		c.graphBase, c.mailboxPath(), url.PathEscape(id))
 	_, err := c.do(ctx, http.MethodDelete, endpoint, nil)
 	return err
 }
 
 // DeleteEvent removes one calendar entry.
 func (c *Client) DeleteEvent(ctx context.Context, id string) error {
-	endpoint := fmt.Sprintf("%s/users/%s/events/%s",
-		c.graphBase, url.PathEscape(c.mailbox), url.PathEscape(id))
+	endpoint := fmt.Sprintf("%s%s/events/%s",
+		c.graphBase, c.mailboxPath(), url.PathEscape(id))
 	_, err := c.do(ctx, http.MethodDelete, endpoint, nil)
 	return err
 }

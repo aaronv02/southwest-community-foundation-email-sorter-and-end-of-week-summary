@@ -27,29 +27,9 @@ import (
 	"swcf/digest/internal/graph"
 )
 
-// Mailboxes this tool must never touch, whatever the flags say.
-//
-// SET THIS BEFORE USE. Seeding writes junk mail into a mailbox and --wipe
-// deletes from one; either against a live mailbox would be unrecoverable. The
-// placeholder below protects nothing, so either edit this list or set the
-// environment variable:
-//
-//	PROTECTED_MAILBOX=real.person@yourdomain.org
+// Never seed or wipe these, whatever the flags say.
 var protectedMailboxes = []string{
 	"director@example.org", // placeholder - replace with the real mailbox
-}
-
-// protectedList returns the compiled-in list plus anything named in the
-// PROTECTED_MAILBOX environment variable, so the guard can be set without
-// editing and rebuilding.
-func protectedList() []string {
-	out := append([]string{}, protectedMailboxes...)
-	for _, extra := range strings.Split(os.Getenv("PROTECTED_MAILBOX"), ",") {
-		if e := strings.TrimSpace(extra); e != "" {
-			out = append(out, e)
-		}
-	}
-	return out
 }
 
 func main() {
@@ -112,7 +92,7 @@ func run(inject bool, file string, threads, wipe bool, from string, confirm bool
 	// Two independent guards. Seeding writes junk into a mailbox and wiping
 	// deletes from one; either against a real mailbox would be unrecoverable
 	// and deeply embarrassing.
-	for _, protected := range protectedList() {
+	for _, protected := range protectedMailboxes {
 		if strings.EqualFold(cfg.Mailbox, protected) {
 			return fmt.Errorf(
 				"refusing to touch %s - that is the production mailbox.\n"+
@@ -126,15 +106,13 @@ func run(inject bool, file string, threads, wipe bool, from string, confirm bool
 				"  --i-know-this-is-a-test-mailbox", cfg.Mailbox)
 	}
 
-	secret, err := cfg.Secret()
+	client, err := newClient(cfg)
 	if err != nil {
 		return err
 	}
 
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Minute)
 	defer cancel()
-
-	client := graph.New(cfg.TenantID, cfg.ClientID, secret, cfg.Mailbox, cfg.Timezone)
 	if err := client.Ping(ctx); err != nil {
 		return err
 	}
@@ -214,7 +192,7 @@ func doInject(ctx context.Context, c *graph.Client, now time.Time, tz string) er
 		// --- Should appear as "still waiting on you", oldest first ----------
 		{
 			Subject: "Letter of inquiry - Mancos Valley Resource Center",
-			Body: "Dear Ms. Wrinkle, please find attached our letter of inquiry requesting " +
+			Body: "Dear Director, please find attached our letter of inquiry requesting " +
 				"$35,000 over two years to expand our food security program in Mancos.",
 			FromName: "Tessa Nunn", FromAddress: "director@mancosvalleyresources.org",
 			Received: now.Add(-days(11)), IsRead: true,
